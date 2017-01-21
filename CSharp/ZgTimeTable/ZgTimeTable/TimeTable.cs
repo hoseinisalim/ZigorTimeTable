@@ -110,7 +110,7 @@ namespace ZgTimeTable
                             {
                                 if (isInSession(ex, future))
                                 {
-                                    exDif = Math.Min(nextChange(time + ex.remaining(future)) + dif, exDif);
+                                    exDif = Math.Min(nextChange(future + ex.remaining(future)) + dif, exDif);
                                 }
                             }
                             dif = Math.Min(exDif, dif);
