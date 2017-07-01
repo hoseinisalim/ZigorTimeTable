@@ -82,7 +82,7 @@ namespace ZgTimeTable
             {
                 foreach (Session session in Sessions)
                 {
-                    if (!session.isInPeriod(time))
+                    if (session.isFinished(time))
                         continue;
 
                     long s;
@@ -140,7 +140,7 @@ namespace ZgTimeTable
 
         private static bool isInSession(Session session, long time)
         {
-            if (time < session.Start || (session.End > 0 && session.End < time))
+            if (!session.isInPeriod(time))
             {
                 return false;
             }
@@ -183,7 +183,7 @@ namespace ZgTimeTable
 
         public long remaining(long time)
         {
-            if (isInPeriod(time))
+            if (!isInPeriod(time))
                 return -1;
             
             long t;
@@ -206,17 +206,26 @@ namespace ZgTimeTable
             long r = e - t;
             return r > 0 ? r : 0;
         }
-        public bool isInPeriod(long time)
+        public bool isFinished(long time)
         {
             long e;
             if (Cycle == 0 && End == 0)
+            {
                 e = Start + Duration;
+            }
             else if (End == 0)
+            {
                 e = long.MaxValue;
+            }
             else
+            {
                 e = End;
-
-            return time >= Start && time < e;
+            }
+            return time >= e;
+        }
+        public bool isInPeriod(long time)
+        {
+            return time >= Start && !isFinished(time);
         }
     }
 }
